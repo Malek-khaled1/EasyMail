@@ -1,0 +1,428 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+
+    <!-- 🎨 Design tokens -->
+    <SolidColorBrush x:Key="PrimaryBrush" Color="#2563EB"/>
+    <SolidColorBrush x:Key="PrimaryBrushDark" Color="#1D4ED8"/>
+    <SolidColorBrush x:Key="DangerBrush" Color="#EF4444"/>
+    <SolidColorBrush x:Key="DangerBrushDark" Color="#DC2626"/>
+    <SolidColorBrush x:Key="CardBackgroundBrush" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="ShellBackgroundBrush" Color="#F5F7FA"/>
+    <SolidColorBrush x:Key="ChromeBorderBrush" Color="#E5E7EB"/>
+    <SolidColorBrush x:Key="MutedTextBrush" Color="#6B7280"/>
+    <SolidColorBrush x:Key="PlaceholderTextBrush" Color="#9CA3AF"/>
+    <SolidColorBrush x:Key="SurfaceAltBackgroundBrush" Color="#F9FAFB"/>
+
+    <!-- 🎨 Gradients -->
+    <LinearGradientBrush x:Key="PrimaryButtonGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#2563EB" Offset="0"/>
+        <GradientStop Color="#1D4ED8" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="DangerButtonGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#F97373" Offset="0"/>
+        <GradientStop Color="#EF4444" Offset="0.5"/>
+        <GradientStop Color="#B91C1C" Offset="1"/>
+    </LinearGradientBrush>
+
+    
+    
+    
+    <!-- 🟦 Inbox ListBoxItem Style -->
+    <Style x:Key="InboxListItemStyle" TargetType="ListBoxItem">
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="Cursor" Value="Hand"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListBoxItem">
+                    <Border x:Name="Root"
+                        Background="{TemplateBinding Background}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="4"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Venstre blå strip til selected -->
+                            <Border x:Name="SelectionStrip"
+                                Grid.Column="0"
+                                Background="#2563EB"
+                                CornerRadius="2"
+                                Visibility="Collapsed"/>
+
+                            <!-- Selve indholdet (din DataTemplate) -->
+                            <ContentPresenter Grid.Column="1"
+                                          Margin="0"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Triggers SKAL ligge her, inde i ControlTemplate -->
+                    <ControlTemplate.Triggers>
+
+                        <!-- HOVER -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Root"
+                                Property="Background"
+                                Value="#F3F6FF"/>
+                        </Trigger>
+
+                        <!-- SELECTED -->
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="Root"
+                                Property="Background"
+                                Value="#E6EEFF"/>
+                            <Setter TargetName="SelectionStrip"
+                                Property="Visibility"
+                                Value="Visible"/>
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!-- End style -->
+    
+    
+    
+    
+    
+
+    <!-- 🟦 Modern scrollbar thumb (bruges af alle moderne scrollbars) -->
+    <Style x:Key="ModernScrollBarThumb" TargetType="Thumb">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Thumb">
+                    <Border CornerRadius="4"
+                            Margin="0,2"
+                            Background="#CBD5E1"
+                            Width="8"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Opacity" Value="0.6"/>
+        <Setter Property="Focusable" Value="False"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Opacity" Value="0.9"/>
+            </Trigger>
+            <Trigger Property="IsDragging" Value="True">
+                <Setter Property="Opacity" Value="1.0"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+
+    <Style x:Key="inboxknap" TargetType="ToggleButton">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="Foreground" Value="#374151"/>
+        <Setter Property="Padding" Value="10,6"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="Cursor" Value="Hand"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border x:Name="Border"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="6"
+                        Padding="{TemplateBinding Padding}">
+                        <ContentPresenter VerticalAlignment="Center"/>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <!-- Hover -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Border" Property="Background" Value="#F3F4F6"/>
+                        </Trigger>
+
+                        <!-- Selected -->
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Border" Property="Background" Value="#2563EB"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+
+    <!-- 🟦 Modern vertical scrollbar (bruges i Inbox) -->
+    <Style x:Key="ModernVerticalScrollBar" TargetType="ScrollBar">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Width" Value="10"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ScrollBar">
+                    <Grid Margin="0"
+                          HorizontalAlignment="Right">
+                        <!-- “kanal” bag thumb -->
+                        <Border Background="Transparent"/>
+
+                        <Track x:Name="PART_Track"
+                               IsDirectionReversed="True"
+                               Focusable="False">
+                            <Track.Thumb>
+                                <Thumb Style="{StaticResource ModernScrollBarThumb}"/>
+                            </Track.Thumb>
+
+                            <!-- usynlige knapper – skal være der for at Track virker -->
+                            <Track.IncreaseRepeatButton>
+                                <RepeatButton Command="ScrollBar.LineDownCommand"
+                                              Opacity="0"
+                                              Focusable="False"/>
+                            </Track.IncreaseRepeatButton>
+                            <Track.DecreaseRepeatButton>
+                                <RepeatButton Command="ScrollBar.LineUpCommand"
+                                              Opacity="0"
+                                              Focusable="False"/>
+                            </Track.DecreaseRepeatButton>
+                        </Track>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+    <!-- 🟦 SidebarButton -->
+    <Style x:Key="SidebarButton" TargetType="Button">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Foreground" Value="#111827"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="Padding" Value="12,6"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}"
+                            CornerRadius="6">
+                        <ContentPresenter VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#EEF2FF"/>
+            </Trigger>
+            <Trigger Property="IsKeyboardFocused" Value="True">
+                <Setter Property="Background" Value="#E0ECFF"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- 🟦 PrimaryButton -->
+    <Style x:Key="PrimaryButton" TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderBrush" Value="{StaticResource PrimaryBrushDark}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="16,6"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="MinWidth" Value="96"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="8"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource PrimaryBrushDark}"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" Value="#9CA3AF"/>
+                <Setter Property="BorderBrush" Value="#9CA3AF"/>
+                <Setter Property="Foreground" Value="White"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- 🟥 DangerButton -->
+    <Style x:Key="DangerButton" TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+        <Setter Property="Background" Value="{StaticResource DangerBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource DangerBrushDark}"/>
+    </Style>
+
+    <!-- 🟦 ComposeLineTextBox -->
+    <Style x:Key="ComposeLineTextBox" TargetType="TextBox">
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        <Setter Property="BorderBrush" Value="#D1D5DB"/>
+        <Setter Property="Padding" Value="2,4,2,4"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Style.Triggers>
+            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                <Setter Property="BorderBrush" Value="#2563EB"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- To/Cc/Bcc variants -->
+    <Style x:Key="ToLineTextBox" 
+           TargetType="TextBox" 
+           BasedOn="{StaticResource ComposeLineTextBox}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding HasInvalidTo}" Value="True">
+                <Setter Property="BorderBrush" Value="#EF4444"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- 🟦 Border style for Compose -->
+    <Style x:Key="ToLineBorderStyle" TargetType="Border">
+        <Setter Property="BorderBrush" Value="#D1D5DB"/>
+        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Padding" Value="4"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="BorderBrush" Value="#2563EB"/>
+            </Trigger>
+            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                <Setter Property="BorderBrush" Value="#2563EB"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="ToBorderStyle" TargetType="Border" BasedOn="{StaticResource ToLineBorderStyle}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding HasInvalidTo}" Value="True">
+                <Setter Property="BorderBrush" Value="#EF4444"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="CcBorderStyle" TargetType="Border" BasedOn="{StaticResource ToLineBorderStyle}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding HasInvalidCc}" Value="True">
+                <Setter Property="BorderBrush" Value="#EF4444"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="BccBorderStyle" TargetType="Border" BasedOn="{StaticResource ToLineBorderStyle}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding HasInvalidBcc}" Value="True">
+                <Setter Property="BorderBrush" Value="#EF4444"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- 🟦 LinkButton -->
+    <Style x:Key="LinkButton" TargetType="Button">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Foreground" Value="#2563EB"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Padding" Value="4,0"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="TextBlock.TextDecorations" Value="Underline"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- 🟦 Global CardBorder (container) -->
+    <Style x:Key="CardBorder" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource CardBackgroundBrush}"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="BorderBrush" Value="{StaticResource ChromeBorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="20"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <!-- ❗ Fjernet gammel shadow -->
+        <Setter Property="Effect" Value="{x:Null}"/>
+    </Style>
+
+    <!-- 🟦 TextInput -->
+    <Style x:Key="TextInput" TargetType="TextBox">
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Padding" Value="8,4"/>
+        <Setter Property="BorderBrush" Value="#D1D5DB"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Background" Value="#F9FAFB"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
+
+    <!-- 🟦 Field labels -->
+    <Style x:Key="FieldLabel" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="#4B5563"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="0,0,12,0"/>
+    </Style>
+
+    <!-- 🟦 Recipient chip -->
+    <Style x:Key="RecipientChipBorder" TargetType="Border">
+        <Setter Property="Margin" Value="0,0,6,6"/>
+        <Setter Property="Padding" Value="8,3"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Background" Value="#E5E7EB"/>
+    </Style>
+
+    <!-- 🟦 Icon button (close etc.) -->
+    <Style x:Key="IconButton" TargetType="Button">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Width" Value="32"/>
+        <Setter Property="Height" Value="32"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}"
+                            CornerRadius="16">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#F3F4F6"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="#E5E7EB"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <DropShadowEffect x:Key="DropShadow"
+                  Color="#000000"
+                  BlurRadius="12"
+                  ShadowDepth="2"
+                  Opacity="0.15"/>
+
+
+</ResourceDictionary>

@@ -1,0 +1,209 @@
+﻿<Window x:Class="MalikClient.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:MalikClient.ViewModels"
+        xmlns:data="clr-namespace:System.Windows.Data;assembly=PresentationFramework"
+        xmlns:views="clr-namespace:MalikClient.Views"
+        xmlns:models="clr-namespace:MailCore.Models;assembly=MailCore"
+
+        mc:Ignorable="d"
+        Title="EasyMail"
+        Height="820"
+        Width="1300"
+        Background="#F5F7FA"
+        FontFamily="Segoe UI"
+        FontSize="14"
+        WindowStartupLocation="CenterScreen"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True">
+
+    <!-- GLOBAL RESOURCES -->
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="MainWindowResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <!-- ROOT -->
+    <Grid Background="{StaticResource ShellBackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- TOPBAR -->
+        <Border Grid.Row="0"
+                Background="White"
+                BorderBrush="{StaticResource ChromeBorderBrush}"
+                BorderThickness="0,0,0,1"
+                Padding="20,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Logo -->
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="EasyMail"
+                               FontSize="19"
+                               FontWeight="SemiBold"
+                               Margin="8,0,0,0"
+                               VerticalAlignment="Center"
+                               Foreground="#111827"
+                               FontFamily="Arial Rounded MT Bold"/>
+                </StackPanel>
+
+                <!-- Greeting -->
+                <TextBlock Grid.Column="1"
+                           Text="{Binding Greeting}"
+                           FontSize="20"
+                           Foreground="{StaticResource MutedTextBrush}"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"/>
+
+                <!-- Logout -->
+                <Button Grid.Column="2"
+                        Content="Logout"
+                        Command="{Binding LogoutCommand}"
+                        Style="{StaticResource DangerButton}"
+                        Margin="0,16,0,10"/>
+            </Grid>
+        </Border>
+
+        <!-- MAIN LAYOUT -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="240"/>   <!-- Sidebar -->
+                <ColumnDefinition Width="400"/>   <!-- Inbox List -->
+                <ColumnDefinition Width="*"/>      <!-- Right panel -->
+            </Grid.ColumnDefinitions>
+
+            <!-- SIDEBAR -->
+            <Border Grid.Column="0"
+                    Background="White"
+                    BorderBrush="{StaticResource ChromeBorderBrush}"
+                    BorderThickness="0,0,1,0">
+                <StackPanel Margin="20">
+
+                    <Button Content="Compose"
+                            Command="{Binding NewEmailCommand}"
+                            Style="{StaticResource PrimaryButton}"
+                            Margin="0,0,0,24"
+                            HorizontalAlignment="Stretch"/>
+
+                    <TextBlock Text="Mailboxes"
+                               FontSize="15"
+                               Foreground="{StaticResource PlaceholderTextBrush}"
+                               Margin="2,0,0,4"/>
+
+                    <ToggleButton Content="Inbox"
+                          Style="{StaticResource inboxknap}"
+                          IsChecked="{Binding IsInboxSelected}"
+                          Command="{Binding LoadInboxCommand}"/>
+
+
+                    <Button Content="Sent"
+                            Style="{StaticResource SidebarButton}"
+                            Margin="0,4,0,0"/>
+
+                    <Button Content="Drafts"
+                            Style="{StaticResource SidebarButton}"
+                            Margin="0,4,0,0"/>
+
+                    <TextBlock Text="Filters"
+                               FontSize="15"
+                               Foreground="{StaticResource PlaceholderTextBrush}"
+                               Margin="2,24,0,4"/>
+
+                    <Button Content="Unread"
+                            Style="{StaticResource SidebarButton}"/>
+
+                    <Button Content="Starred"
+                            Style="{StaticResource SidebarButton}"
+                            Margin="0,4,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <!-- INBOX LIST PANEL -->
+            <views:InboxPanel Grid.Column="1"
+                              Margin="24,24,12,24"/>
+
+            <!-- RIGHT PANEL -->
+            <Grid Grid.Column="2"
+                  Margin="12,24,24,24">
+
+                <Border>
+                    <Border.Style>
+                        <Style TargetType="Border" BasedOn="{StaticResource CardBorder}">
+                            <!-- Default: vis placeholder -->
+                            <Setter Property="Visibility" Value="Visible"/>
+
+                            <Style.Triggers>
+
+                                <!-- Skjul hvis Compose er åben -->
+                                <DataTrigger Binding="{Binding IsComposeOpen}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+
+                                <!-- Skjul hvis der er valgt en email -->
+                                <DataTrigger Binding="{Binding HasSelectedEmail}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+
+
+
+                    <StackPanel VerticalAlignment="Center">
+                       
+                        <TextBlock Text="Select a message on the left to preview it here, or click Compose to write a new email."
+                                   FontSize="13"
+                                   Foreground="{StaticResource MutedTextBrush}"
+                                   TextWrapping="Wrap"
+                                   Width="360"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Compose-panel -->
+                <views:ComposePanel
+                    Visibility="{Binding IsComposeOpen,
+                        Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+                <views:ConversationPanel>
+                    <views:ConversationPanel.Style>
+                        <Style TargetType="views:ConversationPanel">
+                            <!-- Default: skjult -->
+                            <Setter Property="Visibility" Value="Collapsed"/>
+
+                            <Style.Triggers>
+
+                                <!-- Vis kun når en email er valgt -->
+                                <DataTrigger Binding="{Binding HasSelectedEmail}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+
+                                <!-- Skjul ALTID hvis compose er åben -->
+                                <DataTrigger Binding="{Binding IsComposeOpen}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+
+                            </Style.Triggers>
+                        </Style>
+                    </views:ConversationPanel.Style>
+                </views:ConversationPanel>
+
+
+
+            </Grid>
+
+        </Grid>
+    </Grid>
+</Window>

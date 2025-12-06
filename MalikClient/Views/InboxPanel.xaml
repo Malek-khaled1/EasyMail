@@ -1,0 +1,146 @@
+﻿<UserControl x:Class="MalikClient.Views.InboxPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression-blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:models="clr-namespace:MailCore.Models;assembly=MailCore"
+             xmlns:c="clr-namespace:MalikClient.Helpers" 
+             mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <c:SmartDateConverter x:Key="SmartDateConverter"/>
+    </UserControl.Resources>
+
+    <Border Style="{StaticResource CardBorder}">
+        <Grid>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <DockPanel Grid.Row="0">
+                    <StackPanel Orientation="Horizontal"
+                VerticalAlignment="Center">
+                        <!-- Titel -->
+                        <TextBlock Text="Inbox"
+                   FontSize="16"
+                   FontWeight="SemiBold"
+                   Foreground="#111827"/>
+
+                        <!-- Offline badge -->
+                        <Border Margin="8,0,0,0"
+                Padding="6,2"
+                Background="#FEE2E2"
+                CornerRadius="4"
+                VerticalAlignment="Center"
+                Visibility="{Binding IsOffline,
+                                     Converter={StaticResource BoolToVisibilityConverter}}">
+                            <TextBlock Text="Offline"
+                       Foreground="#B91C1C"
+                       FontSize="11"
+                       FontWeight="SemiBold"/>
+                        </Border>
+                    </StackPanel>
+
+                    <TextBlock Text="{Binding InboxCountText}"
+               DockPanel.Dock="Right"
+               FontSize="12"
+               Foreground="{StaticResource PlaceholderTextBrush}"
+               VerticalAlignment="Center"/>
+                </DockPanel>
+
+
+                <ListBox Grid.Row="1"
+                         Margin="0,14,0,0"
+                         ItemsSource="{Binding InboxItems}"
+                         SelectedItem="{Binding SelectedEmail}"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         ItemContainerStyle="{StaticResource InboxListItemStyle}">
+
+                    <ListBox.Resources>
+                        <Style TargetType="ScrollBar"
+                               BasedOn="{StaticResource ModernVerticalScrollBar}"/>
+                    </ListBox.Resources>
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type models:EmailSummary}">
+
+                            <Border Background="Transparent"
+                                    Padding="12,10"
+                                    Margin="0"
+                                    HorizontalAlignment="Stretch">
+
+                                <Grid HorizontalAlignment="Stretch">
+
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="4"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border x:Name="SelectionStrip"
+                                            Grid.Column="0"
+                                            Background="#2563EB"
+                                            CornerRadius="2"
+                                            Visibility="Collapsed"/>
+
+                                    <StackPanel Grid.Column="1"
+                                                HorizontalAlignment="Stretch">
+
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Column="0"
+                                                       Text="{Binding From}"
+                                                       FontSize="15"
+                                                       FontWeight="SemiBold"
+                                                       Foreground="#111827"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       TextWrapping="NoWrap"/>
+
+                                            <TextBlock Grid.Column="1"
+                                                       Text="{Binding ReceivedAt, Converter={StaticResource SmartDateConverter}}"
+                                                       FontSize="12"
+                                                       Foreground="#6B7280"
+                                                       VerticalAlignment="Center"
+                                                       Margin="8,0,0,0"/>
+                                        </Grid>
+
+                                        <TextBlock Text="{Binding Subject}"
+                                                   FontSize="13"
+                                                   FontWeight="Normal"
+                                                   Foreground="#111827"
+                                                   Margin="0,2,0,0"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   TextWrapping="NoWrap"/>
+
+                                        <TextBlock Text="{Binding Preview}"
+                                                   FontSize="12"
+                                                   Foreground="#6B7280"
+                                                   Margin="0,2,0,0"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   TextWrapping="NoWrap"/>
+
+                                    </StackPanel>
+
+                                </Grid>
+
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+
+                </ListBox>
+            </Grid>
+
+            
+
+        </Grid>
+    </Border>
+</UserControl>

@@ -1,0 +1,73 @@
+﻿<UserControl x:Class="MalikClient.Views.ConversationPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+             xmlns:viewmodels="clr-namespace:MalikClient.ViewModels">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    </UserControl.Resources>
+
+    <Border Style="{StaticResource CardBorder}">
+        <Grid Margin="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" Margin="8,8,8,0" Height="50">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0"
+                        Style="{StaticResource IconButton}"
+                        Command="{Binding CloseConversationCommand}"
+                        ToolTip="Close">
+                    <TextBlock Text="←" FontSize="18" FontWeight="Bold"/>
+                </Button>
+
+                <TextBlock Grid.Column="1"
+                           Text="{Binding SelectedConversation.Subject}" 
+                           FontSize="16"
+                           FontWeight="SemiBold"
+                           Margin="12,0,0,0"
+                           VerticalAlignment="Center"
+                           TextTrimming="CharacterEllipsis"
+                           Foreground="#111827"/>
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="Loading..." Margin="0,0,8,0" Foreground="Gray"
+                               Visibility="{Binding IsConversationLoading, Converter={StaticResource BoolToVis}}"/>
+                </StackPanel>
+            </Grid>
+
+            <wv2:WebView2 Grid.Row="1" 
+                          x:Name="ConversationBrowser"
+                          Margin="0,8,0,0"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Stretch"/>
+
+            <TextBlock Grid.Row="1" 
+                       Text="Select an email to view conversation"
+                       HorizontalAlignment="Center" 
+                       VerticalAlignment="Center"
+                       Foreground="Gray"
+                       IsHitTestVisible="False">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding HasSelectedEmail}" Value="False">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+
+        </Grid>
+    </Border>
+</UserControl>
