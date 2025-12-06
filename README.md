@@ -13,4 +13,4 @@ System.IdentityModel.Tokens.Jwt --version 8.15.0
 System.Security.Cryptography.ProtectedData --version 10.0.0
 
 
-#### Insert credential.js in MailCore
+#### Insert credential.json in MailCore and embedded as a ressource as a properety
